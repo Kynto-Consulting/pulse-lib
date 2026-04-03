@@ -147,11 +147,25 @@ Low-level client with:
 
 - auto reconnect
 - reconnect backoff
+- reconnect jitter
+- pause-on-hidden and pause-on-offline behavior
+- conditional reconnect policies
+- application-level heartbeat support
 - offline queue
 - parser and serializer hooks
 - event listeners
 - subscribable snapshots
 - presence tracking
+- basic churn metrics in the connection snapshot
+
+Useful options for lowering reconnect churn:
+
+- `reconnectJitterRatio`
+- `pauseWhenHidden`
+- `pauseWhenOffline`
+- `heartbeatIntervalMs`
+- `heartbeatTimeoutMs`
+- `shouldReconnect`
 
 ### `usePulse`
 
@@ -229,6 +243,8 @@ The client automatically recognizes three message groups coming from the worker:
 
 Presence snapshots and incremental events update the internal `presenceMembers` list when `presenceTracking` is enabled.
 
+The client snapshot also exposes light connection metrics such as scheduled reconnects, successful reconnects, heartbeat timeouts, queued messages, visibility state and online state.
+
 ## Local development
 
 If you are working inside this repo:
@@ -267,6 +283,16 @@ Make sure the backend signs the JWT with the same `PULSE_SECRET` configured in t
 ### No messages arrive
 
 Check that both clients are connecting to the same `roomId` and the same deployed worker URL.
+
+### Reconnect churn is too high
+
+Try these first:
+
+- increase `reconnectInterval`
+- keep `reconnectJitterRatio` enabled
+- use `pauseWhenHidden` and `pauseWhenOffline`
+- enable `heartbeatIntervalMs` only when you actually need faster dead-socket detection
+- share one socket per app instead of one socket per component
 
 ### Presence is empty
 

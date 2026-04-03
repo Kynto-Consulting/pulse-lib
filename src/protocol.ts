@@ -38,6 +38,23 @@ export interface PulseErrorEvent {
   limit?: number;
 }
 
+export interface PulseDisconnectState {
+  code?: number;
+  reason?: string;
+  wasClean?: boolean;
+}
+
+export interface PulseClientMetrics {
+  reconnectAttempts: number;
+  reconnectScheduled: number;
+  successfulReconnects: number;
+  queuedMessages: number;
+  heartbeatSent: number;
+  heartbeatTimeouts: number;
+  visibilityState: 'visible' | 'hidden' | 'unknown';
+  online: boolean | 'unknown';
+}
+
 export interface PulseClientSnapshot<TMessage = unknown> {
   status: PulseConnectionStatus;
   presence: Record<string, PulsePresenceMember>;
@@ -46,6 +63,8 @@ export interface PulseClientSnapshot<TMessage = unknown> {
   lastPresence: PulsePresenceEvent | null;
   lastSystem: PulseSystemEvent | null;
   lastError: Event | PulseErrorEvent | null;
+  lastDisconnect: PulseDisconnectState | null;
+  metrics: PulseClientMetrics;
 }
 
 export const defaultPulseFeatures: Required<PulseFeatureFlags> = {
@@ -62,4 +81,15 @@ export const defaultPulseSnapshot = (): PulseClientSnapshot => ({
   lastPresence: null,
   lastSystem: null,
   lastError: null,
+  lastDisconnect: null,
+  metrics: {
+    reconnectAttempts: 0,
+    reconnectScheduled: 0,
+    successfulReconnects: 0,
+    queuedMessages: 0,
+    heartbeatSent: 0,
+    heartbeatTimeouts: 0,
+    visibilityState: 'unknown',
+    online: 'unknown',
+  },
 });

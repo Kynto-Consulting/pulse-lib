@@ -1,6 +1,6 @@
 {
   "name": "@arubiku/pulse-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "type": "module",
   "description": "Library for generating Pulse Auth Tickets and handling client sync",
