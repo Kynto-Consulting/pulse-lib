@@ -83,6 +83,44 @@ client.on('message', (message) => {
 client.connect();
 ```
 
+## Why Pulse instead of Ably?
+
+If you already like Ably, the point of Pulse is not that Ably is bad. The point is control and economics.
+
+Why teams may prefer Pulse:
+
+- your realtime layer runs in your own Cloudflare account
+- your auth model stays fully under your control through JWT tickets
+- your transport lives closer to users through Cloudflare's edge network
+- you can add your own rules, scopes, validation and room behavior without waiting for vendor features
+- your frontend and worker can stay in the same Cloudflare-centric architecture
+
+Practical difference in the free tier model:
+
+- managed realtime vendors like Ably usually gate free usage with explicit connection and message limits that can change over time by plan
+- with Pulse on Cloudflare Workers, the important limit is the Worker request quota and each new WebSocket handshake counts as a request
+- that means you are not paying or budgeting the same way as a per-message SaaS transport layer
+
+For example, on Cloudflare Workers Free, the commonly relevant quota is on the order of `100k` requests per day, not per month. In a WebSocket setup that means up to `100k` new connection handshakes per day before you hit that specific quota. Existing sockets and message flow are a different cost model than a hosted Pub/Sub product. Always verify current Cloudflare and Ably pricing pages before quoting exact limits because plans change.
+
+Latency angle:
+
+- if your app already serves traffic through Cloudflare, Pulse can reduce extra network hops because the socket entrypoint is already on the edge
+- that usually gives you a better path for browser-to-edge communication than sending traffic first to a separate vendor platform and then back into your own stack
+
+Choose Pulse when you want:
+
+- a custom realtime layer inside your own infra
+- lower vendor dependency
+- Cloudflare-native deployment
+- control over auth and room semantics
+
+Choose Ably when you want:
+
+- a fully managed realtime product
+- built-in vendor features you do not want to maintain yourself
+- less infrastructure ownership in exchange for platform limits and pricing
+
 ## API overview
 
 ### `generatePulseTicket`
