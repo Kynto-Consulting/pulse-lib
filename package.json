@@ -1,0 +1,80 @@
+{
+  "name": "@arubiku/pulse-lib",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "description": "Library for generating Pulse Auth Tickets and handling client sync",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./protocol": {
+      "types": "./dist/protocol.d.ts",
+      "import": "./dist/protocol.mjs",
+      "require": "./dist/protocol.js"
+    },
+    "./store": {
+      "types": "./dist/store.d.ts",
+      "import": "./dist/store.mjs",
+      "require": "./dist/store.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js"
+    },
+    "./zustand": {
+      "types": "./dist/zustand.d.ts",
+      "import": "./dist/zustand.mjs",
+      "require": "./dist/zustand.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/react.ts src/zustand.ts src/protocol.ts src/store.ts --format cjs,esm --dts",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup src/index.ts src/react.ts src/zustand.ts src/protocol.ts src/store.ts --format cjs,esm --dts --watch",
+    "bump": "node bump.js",
+    "npm:auth:check": "npm whoami --userconfig .npmrc",
+    "deploy:publish": "npm run build && npm run npm:auth:check && npm publish --access public --userconfig .npmrc",
+    "release:auto": "npm version patch --no-git-tag-version && npm run deploy:publish",
+    "bump:patch:deploy:publish": "node bump.js patch && npm run deploy:publish",
+    "bump:minor:deploy:publish": "node bump.js minor && npm run deploy:publish",
+    "bump:major:deploy:publish": "node bump.js major && npm run deploy:publish"
+  },
+  "dependencies": {
+    "jose": "^5.2.3"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "zustand": "^4.5.2"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "zustand": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@types/react": "^18.2.73",
+    "react": "^18.2.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.3",
+    "zustand": "^4.5.2"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  }
+}
